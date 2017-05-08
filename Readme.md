@@ -7,6 +7,7 @@ build steps:
 3. Run the following:
 
 ```
+$ cd ~
 $ mkdir php
 $ cd php
 $ git clone git@github.com:tkivari/c-php.git .
