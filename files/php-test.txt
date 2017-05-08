@@ -1,0 +1,1 @@
+This is the test file that's going to be transferred from the PHP Server to the PHP Client.

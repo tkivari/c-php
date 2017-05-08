@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="static/style.css"> 
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+        </script>
+        <script type="text/javascript" src="static/main.js"></script>
+    </head>
+
+    <body>
+        <h1>File Downloader</h1>
+        <h2>Enter a filename below and click the "Download" button to download the file to the webserver.</h2>
+
+        <br/><br/>
+
+        <div class="message_container" id="success"></div>
+        <div class="message_container" id="error"></div>
+
+        <form id="downloadForm">
+            <label for="filename">Enter a filename:&nbsp;</label><input type="text" name="filename" id="filename" value="text.txt" />
+            <button type="button" id="downloadButton">Download</button>
+        </form>
+    </body>
+
+
+</html>    

@@ -1,0 +1,3 @@
+FROM php:7.1-fpm
+ADD php-client /php-client
+RUN sed -e 's/;clear_env = no/clear_env = no/' -i /usr/local/etc/php-fpm.d/www.conf
