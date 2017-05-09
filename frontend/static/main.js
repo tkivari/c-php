@@ -16,6 +16,7 @@ $(document).ready(function() {
             }
 
             $.post("/index.php", data, function(result){
+                $("#error").hide();
                 $("#success").html(result.message);
                 $("#success").slideDown("slow");
             }).fail(function(error){
@@ -24,6 +25,7 @@ $(document).ready(function() {
         },
 
         displayError: function(message) {
+            $("#success").hide();
             $("#error").html(message);
             $("#error").slideDown("slow");
         }
