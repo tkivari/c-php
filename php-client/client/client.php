@@ -46,29 +46,43 @@ class Client
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
 
-            if (file_exists($file)) {
-                $from = filesize($file);
-                curl_setopt($ch, CURLOPT_RANGE, $from . "-");
-            }
+            curl_setopt($ch, CURLOPT_NOBODY, true);
+            $data = curl_exec($ch);
 
-            $fp = fopen($file, "a+");
-            if (!$fp) {
-                $this->download_success = false;
-                $this->errors[] = "Unable to open file $file";
-            }
-            curl_setopt($ch, CURLOPT_FILE, $fp);
-            $result = curl_exec($ch);
-            
-            if($errno = curl_errno($ch)) {
-                $this->errors[] = curl_strerror($errno);
-                $this->download_complete = false;
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            if ($httpCode == 200) {  //only perform the download if the file exists on the server.  The server will return HTTP 404 when the file does not exist.
+                curl_setopt($ch, CURLOPT_NOBODY, false);
+                if (file_exists($file)) {
+                    $from = filesize($file);
+                    curl_setopt($ch, CURLOPT_RANGE, $from . "-");
+                }
+
+
+                $fp = fopen($file, "a+");
+                if (!$fp) {
+                    $this->download_complete = false;
+                    $this->errors[] = "Unable to open file $file";
+                }
+                curl_setopt($ch, CURLOPT_FILE, $fp);
+                //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $result = curl_exec($ch);
+                
+                if($errno = curl_errno($ch)) {
+                    $this->errors[] = curl_strerror($errno);
+                    $this->download_complete = false;
+                } else {
+                    $this->download_complete = true;
+                }
+
+                curl_close($ch);
+
+                fclose($fp);  
+
             } else {
-                $this->download_complete = true;
-            }
-
-            curl_close($ch);
-
-            fclose($fp);           
+                $this->download_complete = false;
+                $this->errors[] = "The file does not exist on the server.";
+            }      
 
         } catch(Exception $e) {
             $this->download_success = false;

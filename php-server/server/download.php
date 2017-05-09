@@ -1,6 +1,6 @@
 <?php
 
-namespace \Cara\Server;
+namespace Cara\Server;
 
 class Downloader {
 
@@ -27,8 +27,8 @@ class Downloader {
         header('Content-type: application/octet-stream');
         header("Accept-Ranges: bytes");
 
-        $fp = @fopen($file, 'rb');
-        $filesize   = filesize($file); 
+        $fp = @fopen($this->file, 'rb');
+        $filesize   = filesize($this->file); 
         $length = $filesize;           // Initial content length (for whole file if no range is specified)
         $start  = 0;                   // Initial start byte if no range is specified
         $end    = $filesize - 1;       // Initial end byte if no range is specifed (get the entire file)
@@ -38,10 +38,10 @@ class Downloader {
             $calculated_start = $start;
             $calculated_end   = $end;
             list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
-            
+
             // if more than one range is specified, 
             if (strpos($range, ',') !== false) {
-                http_response_code(416); // return HTTP response 206 - requested range not satisfiable
+                http_response_code(416); // return HTTP respons 416 - requested range not satisfiable
                 header("Content-Range: bytes $start-$end/$filesize");
                 exit;
             }
@@ -59,7 +59,7 @@ class Downloader {
             // if the requested start byte is greater than the requested end byte, or the start or end bytes are greater than the file size,
             // then return a 416 code (range not satisfiable)
             if ($calculated_start > $calculated_end || $calculated_start > $filesize - 1 || $calculated_end >= $filesize) {
-                http_response_code(416); // return HTTP response 206 - requested range not satisfiable
+                http_response_code(416); // return HTTP response 416 - requested range not satisfiable
                 header("Content-Range: bytes $start-$end/$filesize");
                 exit;
             }
@@ -67,8 +67,10 @@ class Downloader {
             $end    = $calculated_end;
             $length = $end - $start + 1;
             fseek($fp, $start);
+
             http_response_code(206); // return HTTP response 206 - Partial content
         }
+
         header("Content-Range: bytes $start-$end/$filesize");
         header("Content-Length: ".$length);
         $buffer = 1024 * 8; // set the file buffer size to 8192 (8KB chunk size)
